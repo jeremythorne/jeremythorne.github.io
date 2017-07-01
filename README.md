@@ -10,11 +10,11 @@ install python3
 sudo apt-get update
 sudo apt-get install python3
 sudo apt-get install python3-dev
-sudo apt-get install python-pip
+sudo apt-get install python3-pip
 ```
 and then  [ModernGL](https://github.com/cprogrammer1994/ModernGL)
 
 ```bash
-sudo pip install ModernGL
+sudo pip3 install ModernGL
 ```
-but that can't find Python.h ...
+but that can't find glx.h ...
