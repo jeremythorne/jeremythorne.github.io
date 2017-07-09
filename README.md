@@ -34,6 +34,7 @@ get the ModernGL source and examples (possibly you could find these from whereev
 sudo apt-get install git
 git clone <path to ModernGL.git>
 ```
+9th July 2017
 
 ```bash
 pi@raspberrypi:~/dev/ModernGL/examples/standalone $ python3 01_hello_world.py 
@@ -45,5 +46,39 @@ Traceback (most recent call last):
 mgl.Error: cannot detect the display
 ```
 
-it's still trying to use glx to get the display. I think we need to use EGL to create a context instead.
+it's still trying to use glx to get the display.
 
+
+let's install glxinfo to see what GL we've actually got...
+```bash
+sudo apt install mesa-utils
+...
+pi@raspberrypi:~/dev/ModernGL/src $ export DISPLAY=:0
+pi@raspberrypi:~/dev/ModernGL/src $ glxinfo | grep "version"
+Error: unable to open display :0
+
+```
+
+```bash
+sudo pip3 intall PyOpenGL
+python
+>>> import OpenGL
+>>> os.environ['PYOPENGL_PLATFORM'] = 'glx'
+>>> import OpenGL.glx
+>>> OpenGL.GLX.glXGetClientString(None, OpenGL.GLX.GLX_VENDOR)
+b'Mesa Project and SGI'
+>>> OpenGL.GLX.glXGetClientString(None, OpenGL.GLX.GLX_VERSION)
+b'1.4'
+>>> 
+```
+well that's somewhere, ...
+but attempting to get available configs with glXGetFBConfigs gave me seg faults.
+
+I think we need to use EGL to create a windowless context (without talking to X), however the issue here is that only the original Broadcom OpenGLES stack provides EGL, and not the Mesa Desktop GL driver.
+
+```bash
+pi@raspberrypi:~/dev $ ldconfig -p | grep EGL
+        libbrcmEGL.so (libc6,hard-float) => /opt/vc/lib/libbrcmEGL.so
+        libEGL.so (libc6,hard-float) => /opt/vc/lib/libEGL.so
+```
+you can compile Mesa with EGL support, so I wonder why we've not got it here.
