@@ -81,4 +81,50 @@ pi@raspberrypi:~/dev $ ldconfig -p | grep EGL
         libbrcmEGL.so (libc6,hard-float) => /opt/vc/lib/libbrcmEGL.so
         libEGL.so (libc6,hard-float) => /opt/vc/lib/libEGL.so
 ```
-you can compile Mesa with EGL support, so I wonder why we've not got it here.
+
+15th July 2017
+
+need to install mesa EGL
+```bash
+ sudo apt install libegl1-mesa  
+```
+
+```python
+import os
+import OpenGL , ctypes
+os.environ['PYOPENGL_PLATFORM'] = 'egl' 
+from OpenGL.EGL import *
+major = ctypes.c_int()
+minor = ctypes.c_int()
+display = eglGetDisplay(EGL_DEFAULT_DISPLAY)
+eglInitialize(display, ctypes.byref(major), ctypes.byref(minor))
+print(eglQueryString(0, EGL_VERSION))
+print(eglQueryString(0, EGL_VENDOR))
+eglTerminate()
+
+```
+gives:
+```bash
+libEGL warning: DRI3: xcb_connect failed
+libEGL warning: DRI2: xcb_connect failed
+libEGL warning: DRI2: xcb_connect failed
+Traceback (most recent call last):
+  File "test1.py", line 8, in <module>
+    eglInitialize(display, ctypes.byref(major), ctypes.byref(minor))
+  File "/usr/local/lib/python3.4/dist-packages/OpenGL/platform/baseplatform.py", line 402, in __call__
+    return self( *args, **named )
+  File "/usr/local/lib/python3.4/dist-packages/OpenGL/error.py", line 232, in glCheckError
+    baseOperation = baseOperation,
+OpenGL.error.GLError: GLError(
+        err = 12289,
+        baseOperation = eglInitialize,
+        cArguments = (
+                <OpenGL._opaque.EGLDisplay_pointer object at 0x76373620>,
+                <cparam 'P' (0x769f7878)>,
+                <cparam 'P' (0x763735a8)>,
+        ),
+        result = 0
+)
+
+```
+where 12289 is 0x3001  EGL_NOT_INITIALIZED EGL is not or could not be initialized, for the specified display.
