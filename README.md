@@ -138,10 +138,22 @@ I'm going to try and get a version of that sample code (using GLES2 not 3) runni
 
 16h August
 
-stuff to install on macbook
+stuff to install on macbook and rpi
 ```bash
 sudo apt install pkg-config libegl1-mesa-dev libgles2-mesa-dev libgbm-dev
 ```
 
 I now have this compiled and running on my macbook running xubuntu - creating an EGL context suitable for GLES 2 and then throwing it away again. I need to add code to actually do some minimal GLES 2.
 See https://github.com/jeremythorne/raspberrypi-playground/tree/master/elima
+
+this also run without error on raspberrypi
+```bash
+@raspberrypi:~/dev/raspberrypi-playground/elima $ ./render-nodes-minimal 
+MESA-LOADER: failed to retrieve device information
+MESA-LOADER: failed to retrieve device information
+MESA-LOADER: failed to retrieve device information
+pi@raspberrypi:~/dev/raspberrypi-playground/elima $ echo $?
+0
+```
+
+once I've actually rendered something I'd like to look at patching ModernGL to support render nodes as a means of creating a context when glx returns no display.
