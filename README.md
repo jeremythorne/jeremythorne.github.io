@@ -128,3 +128,20 @@ OpenGL.error.GLError: GLError(
 
 ```
 where 12289 is 0x3001  EGL_NOT_INITIALIZED EGL is not or could not be initialized, for the specified display.
+
+14th August 2017
+
+what we need is to use DRM Render Nodes
+https://blogs.igalia.com/elima/2016/10/06/example-run-an-opengl-es-compute-shader-on-a-drm-render-node/
+I'm going to try and get a version of that sample code (using GLES2 not 3) running both on my 2005 macbook and raspberry pi
+
+
+16h August
+
+stuff to install on macbook
+```bash
+sudo apt install pkg-config libegl1-mesa-dev libgles2-mesa-dev libgbm-dev
+```
+
+I now have this compiled and running on my macbook running xubuntu - creating an EGL context suitable for GLES 2 and then throwing it away again. I need to add code to actually do some minimal GLES 2.
+See https://github.com/jeremythorne/raspberrypi-playground/tree/master/elima
