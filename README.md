@@ -1,4 +1,14 @@
 This is a set of notes on trying to get headless OpenGL(ES?) rendering working on a rapsberry-pi. 
+
+The original plan was to use python3 ModernGL to speed development, but this doesn't yet have support for creating a context without having a display or xserver running.
+
+So I switched to C code, and with the help of example code from elima on how to use linux DRM render nodes to create an EGL context, I now have simple code that successfully creates a glFramebuffer, performs a glClear and then uses glReadPixels to inspect the results.
+
+TODOs:
+* actually render some triangles
+* benchmark texture upload, rendering and read pixels performance
+* pull request for ModernGL to use render nodes
+
 Oldest comments at the top.
 
 
@@ -161,3 +171,21 @@ pi@raspberrypi:~/dev/raspberrypi-playground/elima $ echo $?
 ```
 
 once I've actually rendered something I'd like to look at patching ModernGL to support render nodes as a means of creating a context when glx returns no display.
+
+23rd August
+I now have a simple application that does a glClear to a framebuffer and then a glReadPixels - it's possible this all happens in SW, but I'm hopeful that it is now actually tickling the GPU. Runs both on 2005 macbook and raspberry pi 3.
+[code](https://github.com/jeremythorne/raspberrypi-playground/tree/master/headless_gl/gl_clear)
+I get slighlty different results on each
+pi:
+```bash
+pi@raspberrypi:~/dev/raspberrypi-playground/headless_gl/gl_clear $ ./headless_gl_clear 
+MESA-LOADER: failed to retrieve device information
+MESA-LOADER: failed to retrieve device information
+MESA-LOADER: failed to retrieve device information
+1a 1a 1a ff
+```
+macbook:
+```bash
+19 19 19 ff
+```
+maybe I'm getting different bit depth surfaces? Or just hitting different rounding?
