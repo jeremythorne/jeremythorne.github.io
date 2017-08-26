@@ -237,6 +237,7 @@ ouch.
 
 More detailed benchmarking (times are for 10000 loops)
 using [benchmark code](https://github.com/jeremythorne/raspberrypi-playground/tree/master/headless_gl/benchmark)
+
 | upload size | render size | read size | raspberry pi 3 (time ms) | 2005 intel macbook running xubuntu(time ms) |
 |-------------|-------------|-----------|--------------------------|---------------------------------------------|
 | 4x4         | 4x4         | 4x4       | 869                      | 986                                         |
@@ -244,3 +245,12 @@ using [benchmark code](https://github.com/jeremythorne/raspberrypi-playground/tr
 | 256x256     | 4x4         | 4x4       | 19822                    | 1772                                        |
 | 4x4         | 256x256     | 256x256   | 39582                    | 9340                                        |
 | 256x256     | 256x256     | 256x256   | 45664                    | 11836                                       |
+
+that second row gives the raspberry pi GPU a fill rate of about 2GB/s 
+(10000 loops * 256 * 256 pixels * 4 bytes per pixel * 2 read in and write out / 3498 - 869 ms)
+
+|               | pi 3 (MB/s) | macbook (MB/s) |
+|---------------|-------------|----------------|
+| fill rate     | 1900        | 1820           |
+| upload rate   | 132         | 3180           |
+| download rate | 69          | 445            |
