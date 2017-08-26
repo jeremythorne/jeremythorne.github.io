@@ -199,6 +199,6 @@ maybe I'm getting different bit depth surfaces? Or just hitting different roundi
 
 26th August
 
-I now have code running on my macbook-with-xubuntu that loads data using glTexImage2D, creates a glFramebuffer, renders a textured quad with glDrawArrays and then reads the results using glReadPixels. [My code](https://github.com/jeremythorne/raspberrypi-playground/tree/master/headless_gl/gl_quad). I'm using [stb image](https://github.com/nothings/stb) for saving results.
+I now have code running on my macbook-with-xubuntu and raspberry pi that loads data using glTexImage2D, creates a glFramebuffer, renders a textured quad with glDrawArrays and then reads the results using glReadPixels. [My code](https://github.com/jeremythorne/raspberrypi-playground/tree/master/headless_gl/gl_quad). I'm using [stb image](https://github.com/nothings/stb) for saving results.
 
 ![my first rendered quad](first_quad.png) 
