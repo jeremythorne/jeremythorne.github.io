@@ -1,18 +1,22 @@
-This is a set of notes on trying to get headless OpenGL(ES?) rendering working on a rapsberry-pi. 
+This is a set of notes on trying to get headless OpenGL-ES2 rendering working on a rapsberry-pi. 
 
-The original plan was to use python3 ModernGL to speed development, but this doesn't yet have support for creating a context without having a display or xserver running.
+By headless I mean, creating a GPU context without having a display or xserver running e.g. communicating with the pi purely over the network.
 
-So I switched to C code, and with the help of example code from elima on how to use linux DRM render nodes to create an EGL context, I now have simple code that successfully creates a glFramebuffer, performs a glClear and then uses glReadPixels to inspect the results.
+Using DRM render nodes to create an EGL context, I now have simple code that successfully creates a glFramebuffer, uploads pixel data with glTexImage2D, renders a textured quad and then uses glReadPixels to inspect the results. That is, the basics of some mixed CPU/GPU computation e.g. computer vision, image processing, AI ...
 
 TODOs:
-* actually render some triangles
 * benchmark texture upload, rendering and read pixels performance
-* pull request for ModernGL to use render nodes
+* pull request for ModernGL to use render nodes so we can develop in python.
+* actually do some useful computation to compare against processing just on the CPU and to wrestle with storing results as pixels.
+
+---------------------------------
 
 Oldest comments at the top.
 
 
 1st July 2017
+
+The original plan was to use python3 ModernGL to speed development, but this doesn't yet have support for creating a context without having a display or xserver running...
 
 Some notes on headless rendering on a raspberry pi
 
@@ -189,3 +193,7 @@ macbook:
 19 19 19 ff
 ```
 maybe I'm getting different bit depth surfaces? Or just hitting different rounding?
+
+26th August
+
+I now have code running on my macbook-with-xubuntu that loads data using glTexImage2D, creates a glFramebuffer, renders a textured quad with glDrawArrays and then reads the results using glReadPixels. [My code](https://github.com/jeremythorne/raspberrypi-playground/tree/master/headless_gl/gl_quad). I'm using [stb image](https://github.com/nothings/stb) for saving results. 
