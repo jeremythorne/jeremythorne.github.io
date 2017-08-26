@@ -202,3 +202,23 @@ maybe I'm getting different bit depth surfaces? Or just hitting different roundi
 I now have code running on my macbook-with-xubuntu and raspberry pi that loads data using glTexImage2D, creates a glFramebuffer, renders a textured quad with glDrawArrays and then reads the results using glReadPixels. [My code](https://github.com/jeremythorne/raspberrypi-playground/tree/master/headless_gl/gl_quad). I'm using [stb image](https://github.com/nothings/stb) for saving results.
 
 ![my first rendered quad](first_quad.png) 
+
+some first quick benchmarking. 10000 loops of upload, render, read a 256x256 image
+
+2005 macbook with xubuntu
+```
+OpenGL vendor string: Intel Open Source Technology Center
+OpenGL renderer string: Mesa DRI Intel(R) 965GM x86/MMX/SSE2
+
+real    0m10.513s
+user    0m7.524s
+sys     0m0.404s
+```
+
+raspberry pi 3
+```
+real	0m58.205s
+user	0m54.230s
+sys	0m0.840s
+```
+ouch.
