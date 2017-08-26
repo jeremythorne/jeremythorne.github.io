@@ -7,8 +7,20 @@ Using DRM render nodes to create an EGL context, I now have simple code that suc
 
 ![my first rendered quad](first_quad.png)
 
+Some benchmarking 10000 loops of upload, render, read
+
+| upload size | render size | read size | raspberry pi 3 (time ms) | 2005 intel macbook running xubuntu(time ms) |
+|-------------|-------------|-----------|--------------------------|---------------------------------------------|
+| 4x4         | 4x4         | 4x4       | 869                      | 986                                         |
+| 4x4         | 256x256     | 4x4       | 3498                     | 3727                                        |
+| 256x256     | 4x4         | 4x4       | 19822                    | 1772                                        |
+| 4x4         | 256x256     | 256x256   | 39582                    | 9340                                        |
+| 256x256     | 256x256     | 256x256   | 45664                    | 11836                                       |
+
+the first row is essentially just overhead - the cost of doing business. The raspberry pi has similar overhead and rendering performance to the macbook, but it's texture upload performance is ~ 1/10th and it's read performance 1/7th that of the macbook.
+So to do anything useful you'd want to try and keep activity in the GPU and return minimal results (e.g. a count of non zero pixels).
+
 TODOs:
-* benchmark texture upload, rendering and read pixels performance
 * pull request for ModernGL to use render nodes so we can develop in python.
 * actually do some useful computation to compare against processing just on the CPU and to wrestle with storing results as pixels.
 
@@ -222,3 +234,13 @@ user	0m54.230s
 sys	0m0.840s
 ```
 ouch.
+
+More detailed benchmarking (times are for 10000 loops)
+using [benchmark code](https://github.com/jeremythorne/raspberrypi-playground/tree/master/headless_gl/benchmark)
+| upload size | render size | read size | raspberry pi 3 (time ms) | 2005 intel macbook running xubuntu(time ms) |
+|-------------|-------------|-----------|--------------------------|---------------------------------------------|
+| 4x4         | 4x4         | 4x4       | 869                      | 986                                         |
+| 4x4         | 256x256     | 4x4       | 3498                     | 3727                                        |
+| 256x256     | 4x4         | 4x4       | 19822                    | 1772                                        |
+| 4x4         | 256x256     | 256x256   | 39582                    | 9340                                        |
+| 256x256     | 256x256     | 256x256   | 45664                    | 11836                                       |
