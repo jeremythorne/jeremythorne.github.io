@@ -4,6 +4,9 @@ By headless I mean, creating a GPU context without having a display or xserver r
 
 Using DRM render nodes to create an EGL context, I now have simple code that successfully creates a glFramebuffer, uploads pixel data with glTexImage2D, renders a textured quad and then uses glReadPixels to inspect the results. That is, the basics of some mixed CPU/GPU computation e.g. computer vision, image processing, AI ...
 
+
+![my first rendered quad](first_quad.png)
+
 TODOs:
 * benchmark texture upload, rendering and read pixels performance
 * pull request for ModernGL to use render nodes so we can develop in python.
@@ -198,4 +201,4 @@ maybe I'm getting different bit depth surfaces? Or just hitting different roundi
 
 I now have code running on my macbook-with-xubuntu that loads data using glTexImage2D, creates a glFramebuffer, renders a textured quad with glDrawArrays and then reads the results using glReadPixels. [My code](https://github.com/jeremythorne/raspberrypi-playground/tree/master/headless_gl/gl_quad). I'm using [stb image](https://github.com/nothings/stb) for saving results.
 
-(my first rendered quad)[first_quad.png] 
+![my first rendered quad](first_quad.png) 
