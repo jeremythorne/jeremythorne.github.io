@@ -2,7 +2,7 @@ This is a set of notes on trying to get headless OpenGL-ES2 rendering working on
 
 By headless I mean, creating a GPU context without having a display or xserver running e.g. communicating with the pi purely over the network.
 
-Using DRM render nodes to create an EGL context, I now have simple code that successfully creates a glFramebuffer, uploads pixel data with glTexImage2D, renders a textured quad and then uses glReadPixels to inspect the results. That is, the basics of some mixed CPU/GPU computation e.g. computer vision, image processing, AI ...
+Using [DRM render nodes](https://en.wikipedia.org/wiki/Direct_Rendering_Manager) to create an EGL context, I now have simple code that successfully creates a glFramebuffer, uploads pixel data with glTexImage2D, renders a textured quad and then uses glReadPixels to inspect the results. That is, the basics of some mixed CPU/GPU computation e.g. computer vision, image processing, AI ...
 
 
 ![my first rendered quad](first_quad.png)
@@ -254,3 +254,7 @@ that second row gives the raspberry pi GPU a fill rate of about 2GB/s
 | fill rate     | 1900        | 1820           |
 | upload rate   | 132         | 3180           |
 | download rate | 69          | 445            |
+
+7th September
+
+Obviously the raspberry pi GPU (aka [Videocore V3D](https://docs.broadcom.com/docs/12358545) wasn't designed to be used like this. It was primarily designed for rendering user interfaces on phones and set top boxes and for playing 3D games. In these cases the textures and geometry are uploaded at the start of day (so little ongoing upload bandwidth) and results were streamed straight to the display (so no download to the CPU, and no waiting on the CPU for the previous frame to complete before issuing instructions for the next). Further glReadPixels was only ever designed for correctness and debugging capability so it's possible we're hitting unoptimised code paths here. Memory bandwith is power hungry, so that partly explains why the macbook has better upload and download speeds, but the pi GPU also expects it's textures to be in "t-format" (a [hilbert curve](https://en.wikipedia.org/wiki/Hilbert_curve) like re-arrangement of pixels that improves cache performance particularly when textures are rotated) so we'll be paying some price for that conversion to and from raster format (are we using ARM NEON to help with this?).
