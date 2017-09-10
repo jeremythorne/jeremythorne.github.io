@@ -257,4 +257,43 @@ that second row gives the raspberry pi GPU a fill rate of about 2GB/s
 
 7th September
 
-Obviously the raspberry pi GPU (aka [Videocore V3D](https://docs.broadcom.com/docs/12358545) wasn't designed to be used like this. It was primarily designed for rendering user interfaces on phones and set top boxes and for playing 3D games. In these cases the textures and geometry are uploaded at the start of day (so little ongoing upload bandwidth) and results were streamed straight to the display (so no download to the CPU, and no waiting on the CPU for the previous frame to complete before issuing instructions for the next). Further glReadPixels was only ever designed for correctness and debugging capability so it's possible we're hitting unoptimised code paths here. Memory bandwith is power hungry, so that partly explains why the macbook has better upload and download speeds, but the pi GPU also expects it's textures to be in "t-format" (a [hilbert curve](https://en.wikipedia.org/wiki/Hilbert_curve) like re-arrangement of pixels that improves cache performance particularly when textures are rotated) so we'll be paying some price for that conversion to and from raster format (are we using ARM NEON to help with this?).
+Obviously the raspberry pi GPU (aka [Videocore V3D](https://docs.broadcom.com/docs/12358545)) wasn't designed to be used like this. It was primarily designed for rendering user interfaces on phones and set top boxes and for playing 3D games. In these cases the textures and geometry are uploaded at the start of day (so little ongoing upload bandwidth) and results were streamed straight to the display (so no download to the CPU, and no waiting on the CPU for the previous frame to complete before issuing instructions for the next). Further glReadPixels was only ever designed for correctness and debugging capability so it's possible we're hitting unoptimised code paths here. Memory bandwith is power hungry, so that partly explains why the macbook has better upload and download speeds, but the pi GPU also expects it's textures to be in "t-format" (a [hilbert curve](https://en.wikipedia.org/wiki/Hilbert_curve) like re-arrangement of pixels that improves cache performance particularly when textures are rotated) so we'll be paying some price for that conversion to and from raster format (are we using ARM NEON to help with this?).
+
+10th Sept
+I wanted to run my benchmark under gdb and do some random ctrl+c's to see where we ended up. Unfortunately I'm not getting much of a back trace.
+
+```bash
+(gdb) r
+Starting program: /home/pi/dev/raspberrypi-playground/headless_gl/benchmark/headless_gl_quad 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/arm-linux-gnueabihf/libthread_db.so.1".
+MESA-LOADER: failed to retrieve device information
+MESA-LOADER: failed to retrieve device information
+MESA-LOADER: failed to retrieve device information
+minimal upload, full render, read
+^C
+Program received signal SIGINT, Interrupt.
+0x76fbca1c in memcmp () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+(gdb) bt
+#0  0x76fbca1c in memcmp () from /usr/lib/arm-linux-gnueabihf/libarmmem.so
+#1  0x00000000 in ?? ()
+(gdb) 
+```
+
+and trying to install more sybmols doesn't get anywhere much
+```bash
+pi@raspberrypi:~/dev/raspberrypi-playground/headless_gl/benchmark $ sudo apt install  libegl1-mesa-dbg libgles2-mesa-dbg 
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+Some packages could not be installed. This may mean that you have
+requested an impossible situation or if you are using the unstable
+distribution that some required packages have not yet been created
+or been moved out of Incoming.
+The following information may help to resolve the situation:
+
+The following packages have unmet dependencies:
+ libegl1-mesa-dbg : Depends: libegl1-mesa (= 11.1.0-1+rpi1) but 13.0.0-1+rpi1 is to be installed
+ libgles2-mesa-dbg : Depends: libgles2-mesa (= 11.1.0-1+rpi1) but 13.0.0-1+rpi1 is to be installed
+E: Unable to correct problems, you have held broken packages.
+```
